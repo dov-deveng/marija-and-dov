@@ -105,18 +105,22 @@
     width: 112px; height: 112px; border-radius: 50%;
     background: var(--red); color: var(--paper);
     font-size: 32px; font-weight: 700; letter-spacing: -.04em;
-    transition: transform .2s cubic-bezier(.3,1.6,.5,1);
+    transition: transform .5s cubic-bezier(.3,1.6,.5,1);
+    transform-origin: left center;
   }
   #yes:active { transform: scale(.94); }
   #no {
-    width: 100px; height: 54px;
+    min-width: 100px; height: 54px; padding: 0 18px; white-space: nowrap;
     background: var(--ink); color: var(--paper);
     font-size: 23px; font-weight: 700; letter-spacing: -.04em;
   }
   #no.loose {
     position: fixed; z-index: 20; margin: 0;
-    transition: left .2s cubic-bezier(.2,.9,.2,1), top .2s cubic-bezier(.2,.9,.2,1);
+    transition: left .2s cubic-bezier(.2,.9,.2,1), top .2s cubic-bezier(.2,.9,.2,1), transform .45s cubic-bezier(.6,0,.8,.3), opacity .45s;
   }
+  #no.gone { transform: scale(0) rotate(-12deg); opacity: 0; pointer-events: none; }
+  #yes.big { transform: scale(1.18); }
+  #yes.big:active { transform: scale(1.1); }
 
   .sign { margin-top: 40px; display: flex; justify-content: space-between; align-items: end; }
   .sign b { font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
@@ -137,7 +141,16 @@
     white-space: nowrap;
   }
   .line2 { font-weight: 700; font-size: clamp(42px, 13.4vw, 58px); line-height: .9; letter-spacing: -.035em; margin-top: 12px; }
-  .scene { width: 100%; height: auto; display: block; margin-top: 28px; }
+  .scene { width: 100%; flex: 0 1 auto; min-height: 0; max-height: 300px; display: block; margin-top: 24px; }
+  .cal { margin-top: 22px; display: flex; align-items: center; gap: 18px; }
+  .cal a { color: var(--ink); text-decoration: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  #addcal {
+    height: 54px; padding: 0 18px; display: inline-flex; align-items: center; gap: 12px; white-space: nowrap; flex: none;
+    background: var(--ink); color: var(--paper); font-size: 17px; font-weight: 700; letter-spacing: -.03em;
+  }
+  #addcal svg { width: 26px; height: 14px; }
+  #gcal { white-space: nowrap; font-size: 13px; font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; border-bottom: 0; text-decoration: underline; text-underline-offset: 3px; }
+  .end .sign { margin-top: 22px; }
 
   .lean-l { transform-origin: 128px 214px; animation: leanL 4.2s cubic-bezier(.6,0,.3,1) infinite; }
   .lean-r { transform-origin: 192px 214px; animation: leanR 4.2s cubic-bezier(.6,0,.3,1) infinite; }
@@ -209,6 +222,10 @@
       </g>
       <g class="spark"><path d="M155 39h10v10h10v10h-10v10h-10V59h-10V49h10z" fill="#e8331c"/></g>
     </svg>
+    <div class="cal enter d3">
+      <a id="addcal" href="tonight.ics">add to calendar<svg viewBox="0 0 26 14" aria-hidden="true"><path d="M0 5.5h19V0l7 7-7 7V8.5H0z" fill="#efece4"/></svg></a>
+      <a id="gcal" href="#" target="_blank" rel="noopener">or Google</a>
+    </div>
     <div class="sign"><b>Dov</b><svg class="cross" viewBox="0 0 18 18" aria-hidden="true"><path d="M6 0h6v6h6v6h-6v6H6v-6H0V6h6z" fill="#e8331c"/></svg></div>
   </div>
 </section>
@@ -218,6 +235,8 @@
   var yes = document.getElementById('yes');
   var no = document.getElementById('no');
   var GAP = 16, PAD = 12;
+  var tries = 0;
+  var LINES = ['are you sure?', 'really?', 'last chance.', 'ok then.'];
 
   // read the safe-area insets once from CSS
   var probe = document.createElement('div');
@@ -228,9 +247,24 @@
     return { t: parseFloat(s.paddingTop) || 0, r: parseFloat(s.paddingRight) || 0, b: parseFloat(s.paddingBottom) || 0, l: parseFloat(s.paddingLeft) || 0 };
   }
 
-  function dodge(e) {
+  var last = 0;
+  function attempt(e) {
     if (e && e.cancelable) e.preventDefault();
     if (e) e.stopPropagation();
+    if (tries >= 4 + LINES.length) return; // already leaving
+    var now = Date.now();
+    if (now - last < 200) return; // one tap fires several events: count it once
+    last = now;
+    tries++;
+    if (tries >= 5) no.textContent = LINES[Math.min(tries - 5, LINES.length - 1)];
+    dodge();
+    if (tries >= 4 + LINES.length) {
+      setTimeout(function () { no.classList.add('gone'); yes.classList.add('big'); }, 650);
+      setTimeout(function () { no.remove(); }, 1200);
+    }
+  }
+
+  function dodge() {
     var r = no.getBoundingClientRect();
     if (!no.classList.contains('loose')) {
       no.style.left = r.left + 'px'; no.style.top = r.top + 'px';
@@ -238,7 +272,8 @@
       no.classList.add('loose');
       void no.offsetWidth;
     }
-    var w = r.width, h = r.height, s = insets();
+    var nr = no.getBoundingClientRect(); // size after the label change
+    var w = nr.width, h = nr.height, s = insets();
     var vw = document.documentElement.clientWidth, vh = window.innerHeight;
     var minX = s.l + PAD, maxX = vw - s.r - PAD - w;
     var minY = s.t + PAD, maxY = vh - s.b - PAD - h;
@@ -256,16 +291,55 @@
     no.style.top = Math.round(y) + 'px';
   }
 
-  no.addEventListener('touchstart', dodge, { passive: false });
-  no.addEventListener('pointerdown', dodge, { passive: false });
-  no.addEventListener('mousedown', dodge);
-  no.addEventListener('mouseenter', function () { dodge(null); });
-  no.addEventListener('click', dodge); // backstop: No never does anything
+  no.addEventListener('touchstart', attempt, { passive: false });
+  no.addEventListener('pointerdown', attempt, { passive: false });
+  no.addEventListener('mousedown', attempt);
+  no.addEventListener('mouseenter', function () { attempt(null); });
+  no.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); }); // backstop: No never does anything
 
   window.addEventListener('resize', function () {
     if (!no.classList.contains('loose')) return;
     var r = no.getBoundingClientRect(), s = insets();
-    if (r.left < s.l || r.top < s.t || r.right > document.documentElement.clientWidth - s.r || r.bottom > innerHeight - s.b) dodge(null);
+    if (r.left < s.l || r.top < s.t || r.right > document.documentElement.clientWidth - s.r || r.bottom > innerHeight - s.b) dodge();
+  });
+
+  // calendar: tonight 20:00 to 23:00, floating local time (the device's own zone)
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function stamp(d) { return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()); }
+  function utc(d) { return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
+  var today = new Date();
+  var day = stamp(today);
+  var START = day + 'T200000', END = day + 'T230000';
+  window.buildICS = function () {
+    return [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Dov//Tonight//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      'UID:date-with-dov-' + day + '@dov-deveng.github.io',
+      'DTSTAMP:' + utc(new Date()),
+      'DTSTART:' + START, 'DTEND:' + END,
+      'SUMMARY:Date with Dov',
+      'DESCRIPTION:8:00. It\'s a date.',
+      'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:Date with Dov', 'TRIGGER:-PT1H', 'END:VALARM',
+      'END:VEVENT', 'END:VCALENDAR', ''
+    ].join('\r\n');
+  };
+  // Google Calendar fallback, same times, in her calendar's zone
+  document.getElementById('gcal').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' +
+    encodeURIComponent('Date with Dov') + '&dates=' + START + '/' + END + '&details=' + encodeURIComponent("8:00. It's a date.");
+
+  // iOS: a real .ics served as text/calendar is what Safari (and iMessage's Safari view) hands to Calendar.
+  // tonight.ics on this site is for STATIC_DAY; on any other day, build one on the fly.
+  var STATIC_DAY = '20261104';
+  var ios = /iP(hone|od|ad)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  document.getElementById('addcal').addEventListener('click', function (e) {
+    if (ios && day === STATIC_DAY) return; // follow the link to tonight.ics
+    e.preventDefault();
+    var ics = window.buildICS();
+    if (ios) { location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); return; }
+    var url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+    var a = document.createElement('a'); a.href = url; a.download = 'date-with-dov.ics';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
   });
 
   // no page movement at all
@@ -273,7 +347,7 @@
   document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
 
   yes.addEventListener('click', function () {
-    no.remove();
+    if (no.parentNode) no.remove();
     document.getElementById('s-ask').classList.remove('active');
     document.getElementById('s-yes').classList.add('active');
   });
