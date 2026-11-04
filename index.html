@@ -3,32 +3,33 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Marija, quick question</title>
+<title>Marija + Dov</title>
 <meta name="description" content="One question. Two buttons. Choose wisely.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#efece4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Marija + Dov">
 <meta name="format-detection" content="telephone=no">
 
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://dov-deveng.github.io/tonight/">
-<meta property="og:title" content="Marija, quick question">
+<meta property="og:url" content="https://dov-deveng.github.io/marija-and-dov/">
+<meta property="og:title" content="Marija + Dov">
 <meta property="og:description" content="One question. Two buttons. Choose wisely.">
-<meta property="og:image" content="https://dov-deveng.github.io/tonight/og.png?v=2">
-<meta property="og:image:secure_url" content="https://dov-deveng.github.io/tonight/og.png?v=2">
+<meta property="og:image" content="https://dov-deveng.github.io/marija-and-dov/og.png?v=3">
+<meta property="og:image:secure_url" content="https://dov-deveng.github.io/marija-and-dov/og.png?v=3">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Marija, one question.">
+<meta property="og:image:alt" content="Marija + Dov">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Marija, quick question">
+<meta name="twitter:title" content="Marija + Dov">
 <meta name="twitter:description" content="One question. Two buttons. Choose wisely.">
-<meta name="twitter:image" content="https://dov-deveng.github.io/tonight/og.png?v=2">
+<meta name="twitter:image" content="https://dov-deveng.github.io/marija-and-dov/og.png?v=3">
 
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=3">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
 
 <style>
   :root {
@@ -44,12 +45,7 @@
     --sr: env(safe-area-inset-right, 0px);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body {
-    height: 100%;
-    overflow: hidden;
-    overscroll-behavior: none;
-    background: var(--paper);
-  }
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; background: var(--paper); }
   body {
     position: fixed; inset: 0;
     color: var(--ink);
@@ -62,29 +58,30 @@
     touch-action: manipulation;
   }
 
-  .screen {
+  .poster {
     position: fixed; left: 0; right: 0; top: 0;
     height: 100vh; height: 100dvh;
-    display: none;
-    overflow: hidden;
-  }
-  .screen.active { display: block; }
-
-  .poster {
-    position: relative; z-index: 2;
-    height: 100%;
     max-width: 430px;
     margin: 0 auto;
-    padding: calc(var(--st) + 22px) calc(var(--sr) + 22px) calc(var(--sb) + 22px) calc(var(--sl) + 22px);
+    padding: calc(var(--st) + 20px) calc(var(--sr) + 22px) calc(var(--sb) + 20px) calc(var(--sl) + 22px);
     display: flex; flex-direction: column;
+    overflow: hidden;
   }
 
-  .label { font-size: 12px; font-weight: 500; line-height: 1.3; }
+  .label { font-size: 12px; font-weight: 500; line-height: 1.3; display: flex; justify-content: space-between; border-top: 2px solid var(--ink); padding-top: 7px; }
+
+  .scene {
+    flex: 1 1 auto; min-height: 0;
+    width: 100%;
+    margin: 6px 0 14px;
+    display: block;
+    pointer-events: none;
+    overflow: visible;
+  }
 
   h1 {
-    margin-top: auto;
     font-weight: 700;
-    font-size: clamp(56px, 18.6vw, 80px);
+    font-size: clamp(50px, 16.4vw, 70px);
     line-height: .88;
     letter-spacing: -.045em;
     margin-left: -.04em;
@@ -92,7 +89,7 @@
   h1 span { display: block; }
   h1 .r { color: var(--red); }
 
-  .row { margin-top: 32px; display: flex; align-items: center; gap: 20px; min-height: 112px; }
+  .row { margin-top: 24px; display: flex; align-items: center; gap: 20px; min-height: 104px; }
 
   button {
     font-family: inherit; border: 0; cursor: pointer;
@@ -102,143 +99,312 @@
     -webkit-appearance: none; appearance: none;
   }
   #yes {
-    width: 112px; height: 112px; border-radius: 50%;
+    width: 104px; height: 104px; border-radius: 50%;
     background: var(--red); color: var(--paper);
-    font-size: 32px; font-weight: 700; letter-spacing: -.04em;
+    font-size: 30px; font-weight: 700; letter-spacing: -.04em;
     transition: transform .5s cubic-bezier(.3,1.6,.5,1);
     transform-origin: left center;
   }
   #yes:active { transform: scale(.94); }
+  #yes.big { transform: scale(1.18); }
+  #yes.big:active { transform: scale(1.1); }
   #no {
-    min-width: 100px; height: 54px; padding: 0 18px; white-space: nowrap;
+    min-width: 96px; height: 52px; padding: 0 18px; white-space: nowrap;
     background: var(--ink); color: var(--paper);
-    font-size: 23px; font-weight: 700; letter-spacing: -.04em;
+    font-size: 22px; font-weight: 700; letter-spacing: -.04em;
   }
   #no.loose {
     position: fixed; z-index: 20; margin: 0;
     transition: left .2s cubic-bezier(.2,.9,.2,1), top .2s cubic-bezier(.2,.9,.2,1), transform .45s cubic-bezier(.6,0,.8,.3), opacity .45s;
   }
   #no.gone { transform: scale(0) rotate(-12deg); opacity: 0; pointer-events: none; }
-  #yes.big { transform: scale(1.18); }
-  #yes.big:active { transform: scale(1.1); }
 
-  .sign { margin-top: 40px; display: flex; justify-content: space-between; align-items: end; }
+  .sign { margin-top: 18px; display: flex; justify-content: space-between; align-items: end; }
   .sign b { font-size: 15px; font-weight: 700; letter-spacing: -.02em; }
   .cross { width: 16px; height: 16px; display: block; }
 
-  .ring { position: absolute; z-index: 1; pointer-events: none; top: calc(var(--st) - 110px); right: -130px; width: 330px; height: 330px; }
-
-  /* end screen */
-  .end h1 { margin-top: 0; }
+  /* after yes */
+  #done { display: none; }
+  .yes #ask { display: none; }
+  .yes #done { display: block; }
   .big {
-    margin-top: auto;
     font-weight: 800;
-    font-size: clamp(116px, 38vw, 164px);
+    font-size: clamp(104px, 33vw, 142px);
     line-height: .8;
     letter-spacing: -.075em;
     color: var(--red);
     margin-left: -.06em;
     white-space: nowrap;
   }
-  .line2 { font-weight: 700; font-size: clamp(42px, 13.4vw, 58px); line-height: .9; letter-spacing: -.035em; margin-top: 12px; }
-  .scene { width: 100%; flex: 0 1 auto; min-height: 0; max-height: 300px; display: block; margin-top: 24px; }
-  .cal { margin-top: 22px; display: flex; align-items: center; gap: 18px; }
+  .line2 { font-weight: 700; font-size: clamp(40px, 12.4vw, 54px); line-height: .9; letter-spacing: -.035em; margin-top: 10px; }
+  .cal { margin-top: 20px; display: flex; align-items: center; gap: 18px; }
   .cal a { color: var(--ink); text-decoration: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
   #addcal {
     height: 54px; padding: 0 18px; display: inline-flex; align-items: center; gap: 12px; white-space: nowrap; flex: none;
     background: var(--ink); color: var(--paper); font-size: 17px; font-weight: 700; letter-spacing: -.03em;
   }
   #addcal svg { width: 26px; height: 14px; }
-  #gcal { white-space: nowrap; font-size: 13px; font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; border-bottom: 0; text-decoration: underline; text-underline-offset: 3px; }
-  .end .sign { margin-top: 22px; }
+  #gcal { white-space: nowrap; font-size: 13px; font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 3px; }
 
-  .lean-l { transform-origin: 128px 214px; animation: leanL 4.2s cubic-bezier(.6,0,.3,1) infinite; }
-  .lean-r { transform-origin: 192px 214px; animation: leanR 4.2s cubic-bezier(.6,0,.3,1) infinite; }
-  @keyframes leanL { 0%, 18% { transform: rotate(0); } 42%, 74% { transform: rotate(8.5deg); } 96%, 100% { transform: rotate(0); } }
-  @keyframes leanR { 0%, 18% { transform: rotate(0); } 42%, 74% { transform: rotate(-8.5deg); } 96%, 100% { transform: rotate(0); } }
-  .spark { transform-origin: 160px 54px; animation: spark 4.2s ease-out infinite; opacity: 0; }
-  @keyframes spark {
-    0%, 42% { opacity: 0; transform: scale(.2) rotate(0); }
-    50% { opacity: 1; transform: scale(1.15) rotate(45deg); }
-    58%, 70% { opacity: 1; transform: scale(1) rotate(45deg); }
-    78%, 100% { opacity: 0; transform: scale(.6) rotate(45deg); }
-  }
+  .enter { animation: enter .55s cubic-bezier(.2,.8,.2,1) backwards; }
+  .d2 { animation-delay: .1s; }
+  .d3 { animation-delay: .2s; }
+  @keyframes enter { from { opacity: 0; transform: translateY(18px); } }
+  .yes #done .enter { animation-name: enter; }
 
-  .screen.active .enter { animation: enter .55s cubic-bezier(.2,.8,.2,1) backwards; }
-  .screen.active .d2 { animation-delay: .1s; }
-  .screen.active .d3 { animation-delay: .2s; }
-  @keyframes enter { from { opacity: 0; transform: translateY(20px); } }
-
-  @media (prefers-reduced-motion: reduce) {
-    .lean-l, .lean-r, .spark { animation-duration: 8s; }
-    #no.loose { transition: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { #no.loose { transition: none; } }
 </style>
 </head>
 <body>
 
-<section class="screen active" id="s-ask">
-  <svg class="ring" viewBox="0 0 400 400" aria-hidden="true">
-    <circle cx="200" cy="200" r="178" fill="none" stroke="#1f48c8" stroke-width="40"/>
-    <circle cx="200" cy="200" r="62" fill="#e8331c"/>
+<main class="poster" id="poster">
+  <div class="label"><span>For Marija</span><span>Tonight, 20:00</span></div>
+
+  <svg class="scene" id="scene" viewBox="60 62 260 176" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+    <!-- bar -->
+    <rect x="72" y="132" width="236" height="110" fill="#1f48c8"/>
+    <rect x="62" y="126" width="256" height="6" fill="#111"/>
+    <!-- his glass -->
+    <path d="M90,125 L92,105 L108,105 L110,125 Z" fill="#efece4" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="93" y="114" width="14" height="9" fill="#111"/>
+    <!-- her glass -->
+    <path d="M244,98 C244,111 248,114 252,114 C256,114 260,111 260,98 Z" fill="#efece4" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M246,104 C247,110 249,112 252,112 C255,112 257,110 258,104 Z" fill="#e8331c"/>
+    <rect x="250.8" y="114" width="2.4" height="10" fill="#111"/>
+    <rect x="245" y="123" width="14" height="3" fill="#111"/>
+    <!-- stools -->
+    <g fill="#111">
+      <rect x="133" y="166" width="34" height="6" rx="2"/><rect x="148" y="172" width="4" height="62"/><rect x="138" y="212" width="24" height="3"/><rect x="134" y="232" width="32" height="4"/>
+      <rect x="195" y="166" width="34" height="6" rx="2"/><rect x="210" y="172" width="4" height="62"/><rect x="200" y="212" width="24" height="3"/><rect x="196" y="232" width="32" height="4"/>
+    </g>
+
+    <!-- HIM: legs + body -->
+    <g transform="translate(150,166)" fill="#111">
+      <path d="M-14,-2 C-14,-10 -8,-13 0,-13 L30,-12 C37,-12 40,-7 39,-1 L36,36 C36,39 37,40 40,41 L48,43 C51,44 51,47.5 48,47.5 L28,47.5 C26.5,47.5 26,46 26.5,44 L27,8 L-8,8 C-13,7 -14,4 -14,-2 Z"/>
+      <g id="mT">
+        <path d="M-13,4 C-15,-8 -14,-28 -12,-42 C-11,-50 -8,-55 -3,-58 L5,-58 C7,-55 10,-53 12,-50 C15,-45 15.5,-36 14.5,-28 C13.5,-20 13,-14 15,-7 C16,-3 17,0 18,4 Z"/>
+        <g id="mH" transform="translate(0,-56)">
+          <g transform="scale(.24) translate(0,-30)">
+            <path d="M-30,30 L-24,6 C-40,-8 -54,-36 -50,-60 C-46,-88 -22,-104 4,-102 C24,-101 36,-88 38,-72 C39,-66 40,-62 40,-58 C38,-55 37,-52 38,-49 L49,-30 C50.5,-27.5 49,-25 46,-25 L39,-24 C40,-21 42,-19 41,-16.5 C40,-15 38,-14 38,-13 C40,-12 41,-10 40,-8 C39,-6 36,-5 35,-4 C37,-1 38,2 36,5 C33,8 26,9 18,8 L16,30 Z"/>
+            <circle id="mLips" cx="40" cy="-12" r="1" fill="none"/>
+          </g>
+        </g>
+      </g>
+    </g>
+
+    <!-- HER: back arm (behind her body) -->
+    <g id="wFlipA" transform="translate(212,166)" fill="#e8331c" stroke="#efece4" stroke-width="1.2" stroke-linejoin="round">
+      <g id="wBackU"><path d="M-4.2,0 C-4.2,-4 4.2,-4 4.2,0 L3.4,25 L-3.4,25 Z"/>
+        <g id="wBackF"><path d="M-3.4,0 C-3.4,-3.2 3.4,-3.2 3.4,0 L2.4,23 L-2.4,23 Z"/><path d="M-2.8,21 C-3.8,27 -2,31 1,31.5 C3.4,31.5 3.8,27.5 2.8,21 Z"/></g>
+      </g>
+    </g>
+    <!-- HER: legs (stay put) -->
+    <g transform="translate(212,166)" fill="#e8331c">
+      <path d="M27,6 L29,40 L36,44 C37.5,45 36.5,47 35,46.5 L27,44.5 L25,42 L23.5,6 Z"/>
+      <path d="M-13,-3 C-13,-10 -6,-12 2,-12 L31,-10.5 C37,-10 40,-5 38.5,0.5 L41,30 C41.5,33 43,35 46,38 L50,41.5 C51.5,43 50,45 48,44.5 L41.5,41 C39,39.5 37.5,37 36.5,34 L31.5,8 L-9,8 C-13,6 -13,2 -13,-3 Z"/>
+      <path d="M40.5,40 L39.4,47 L41,47 L43,41 Z"/>
+    </g>
+    <!-- HER: body, turns on yes -->
+    <g id="wFlipB" transform="translate(212,166)">
+      <g id="wT">
+        <path fill="#e8331c" d="M-12,5 C-13,-4 -10,-14 -9.5,-24 C-9,-34 -10,-44 -8,-50 C-6,-54 -3,-56 -1,-57 L5,-57 C6,-54 8,-52 9.5,-49 C11,-46 13,-42 13,-37 C13,-33 11,-30 8,-28 C6,-24 6,-19 7,-14 C9,-8 12,-2 14,5 Z"/>
+        <g id="wH" transform="translate(2,-55)">
+          <g transform="scale(.23) translate(0,-30)">
+            <path fill="#e8331c" d="M-24,30 L-20,6 C-36,-8 -48,-34 -45,-58 C-42,-86 -20,-102 4,-100 C22,-99 33,-87 35,-72 C36,-66 37,-62 37,-58 C35.5,-55 35,-52 36,-49 L44,-34 C45,-32 44,-30 41.5,-30 L36,-28.5 C37,-26 39,-24 38.5,-21 C38,-19 36,-18 35.5,-17 C38,-15.5 39,-13 38,-11 C37,-9 34.5,-8 33.5,-7 C35,-4 35.5,-1 33.5,2 C31,6 24,7 16,6 L14,30 Z"/>
+            <path fill="#111" d="M40,-64 C42,-86 26,-106 2,-106 C-28,-106 -52,-86 -54,-56 C-56,-28 -52,2 -60,32 C-64,50 -58,66 -44,72 C-36,60 -32,42 -30,22 C-28,8 -28,-6 -26,-18 C-20,-36 -12,-52 0,-60 C12,-66 26,-66 40,-64 Z"/>
+            <circle id="wLips" cx="37" cy="-14" r="1" fill="none"/>
+          </g>
+        </g>
+      </g>
+      <!-- her front arm -->
+      <g id="wFrontU" fill="#e8331c" stroke="#efece4" stroke-width="1.2" stroke-linejoin="round"><path d="M-4.2,0 C-4.2,-4 4.2,-4 4.2,0 L3.4,25 L-3.4,25 Z"/>
+        <g id="wFrontF"><path d="M-3.4,0 C-3.4,-3.2 3.4,-3.2 3.4,0 L2.4,23 L-2.4,23 Z"/><path d="M-2.8,21 C-3.8,27 -2,31 1,31.5 C3.4,31.5 3.8,27.5 2.8,21 Z"/></g>
+      </g>
+    </g>
+
+    <!-- HIM: arm, on top -->
+    <g transform="translate(150,166)" fill="#111" stroke="#efece4" stroke-width="1.3" stroke-linejoin="round">
+      <g id="mArmU"><path d="M-5.6,0 C-5.6,-5.2 5.6,-5.2 5.6,0 L4.8,30 L-4.8,30 Z"/>
+        <g id="mArmF"><path d="M-4.8,0 C-4.8,-4.4 4.8,-4.4 4.8,0 L3.4,28 L-3.4,28 Z"/><path d="M-3.6,26 C-4.8,32.5 -2.4,37.5 1.2,38 C4.2,38 4.6,33.5 3.6,26 Z"/></g>
+      </g>
+    </g>
+
+    <!-- the spark -->
+    <g id="heart" transform="translate(181,62) scale(0)">
+      <path d="M0,4 C-6,-1 -9,-4 -9,-7.5 C-9,-10.5 -6.5,-12.5 -4,-12.5 C-2.2,-12.5 -0.8,-11.4 0,-10 C0.8,-11.4 2.2,-12.5 4,-12.5 C6.5,-12.5 9,-10.5 9,-7.5 C9,-4 6,-1 0,4 Z" fill="#e8331c"/>
+    </g>
   </svg>
-  <div class="poster">
-    <div class="label">For Marija</div>
-    <h1 class="enter"><span>are we</span><span>going out</span><span class="r">tonight</span><span>at 8:00?</span></h1>
-    <div class="row enter d2">
+
+  <div id="ask">
+    <h1><span>are we</span><span>going out</span><span class="r">tonight</span><span>at 8:00?</span></h1>
+    <div class="row">
       <button id="yes" type="button">yes</button>
       <button id="no" type="button" tabindex="-1">no</button>
     </div>
-    <div class="sign enter d3">
-      <b>Dov</b>
-      <svg class="cross" viewBox="0 0 18 18" aria-hidden="true"><path d="M6 0h6v6h6v6h-6v6H6v-6H0V6h6z" fill="#e8331c"/></svg>
-    </div>
   </div>
-</section>
 
-<section class="screen end" id="s-yes">
-  <div class="poster">
+  <div id="done">
     <div class="big enter">8:00.</div>
     <div class="line2 enter d2">it's a date.</div>
-    <svg class="scene enter d3" viewBox="0 0 320 270" role="img" aria-label="Two figures at a bar leaning in for a kiss">
-      <rect x="0" y="168" width="320" height="10" fill="#111"/>
-      <g transform="translate(34 128)">
-        <path d="M0 0h34L17 20z" fill="none" stroke="#111" stroke-width="3" stroke-linejoin="round"/>
-        <rect x="15.5" y="20" width="3" height="16" fill="#111"/>
-        <rect x="8" y="36" width="18" height="4" fill="#111"/>
-        <line x1="12" y1="-10" x2="20" y2="9" stroke="#111" stroke-width="2"/><circle cx="19" cy="7" r="4.5" fill="#e8331c"/>
-      </g>
-      <g fill="#111">
-        <rect x="104" y="212" width="48" height="7"/><rect x="125" y="219" width="6" height="44"/><rect x="112" y="261" width="32" height="5"/>
-        <rect x="168" y="212" width="48" height="7"/><rect x="189" y="219" width="6" height="44"/><rect x="176" y="261" width="32" height="5"/>
-      </g>
-      <g class="lean-l">
-        <rect x="110" y="128" width="36" height="84" fill="#e8331c"/>
-        <circle cx="128" cy="98" r="22" fill="#e8331c" style="mix-blend-mode:multiply"/>
-      </g>
-      <g class="lean-r">
-        <rect x="174" y="128" width="36" height="84" fill="#1f48c8"/>
-        <circle cx="192" cy="98" r="22" fill="#1f48c8" style="mix-blend-mode:multiply"/>
-      </g>
-      <g class="spark"><path d="M155 39h10v10h10v10h-10v10h-10V59h-10V49h10z" fill="#e8331c"/></g>
-    </svg>
     <div class="cal enter d3">
       <a id="addcal" href="tonight.ics">add to calendar<svg viewBox="0 0 26 14" aria-hidden="true"><path d="M0 5.5h19V0l7 7-7 7V8.5H0z" fill="#efece4"/></svg></a>
       <a id="gcal" href="#" target="_blank" rel="noopener">or Google</a>
     </div>
-    <div class="sign"><b>Dov</b><svg class="cross" viewBox="0 0 18 18" aria-hidden="true"><path d="M6 0h6v6h6v6h-6v6H6v-6H0V6h6z" fill="#e8331c"/></svg></div>
   </div>
-</section>
+
+  <div class="sign"><b>Dov</b><svg class="cross" viewBox="0 0 18 18" aria-hidden="true"><path d="M6 0h6v6h6v6h-6v6H6v-6H0V6h6z" fill="#e8331c"/></svg></div>
+</main>
 
 <script>
+/* ---------- the scene: two silhouettes, joints driven by keyframes + 2-bone IK ---------- */
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var D = Math.PI / 180;
+
+  function ease(kind, p) {
+    if (kind === 'lin') return p;
+    if (kind === 'in') return p * p * p;
+    if (kind === 'out') return 1 - Math.pow(1 - p, 3);
+    if (kind === 'back') { var c = 1.7; p = p - 1; return 1 + (c + 1) * p * p * p + c * p * p; }
+    return p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+  }
+  function sample(track, t) {
+    if (t <= track[0][0]) return track[0][1];
+    for (var i = 1; i < track.length; i++) {
+      var b = track[i];
+      if (t <= b[0]) {
+        var a = track[i - 1], p = ease(b[2], (t - a[0]) / (b[0] - a[0]));
+        if (typeof a[1] === 'number') return a[1] + (b[1] - a[1]) * p;
+        return [a[1][0] + (b[1][0] - a[1][0]) * p, a[1][1] + (b[1][1] - a[1][1]) * p];
+      }
+    }
+    return track[track.length - 1][1];
+  }
+
+  // rest poses (each figure in its own hip frame, facing +x)
+  var M_REST = [25, -14];     // his wrist on his thigh
+  var W_BACK = [-5, -8];      // her back hand on the stool behind her
+  var W_FRONT = [39, -48];    // her hand on her glass
+  var M_GRAB = [64, -49];     // his wrist over her far shoulder
+  var M_UP = [54, -80];       // his wrist after she lifts it
+
+  // the loop: 1 hand, 2 yawn-arm, 3 lean. 9.6 s
+  var LOOP = 9600;
+  var T = {
+    mT: [[0,0],[3200,0],[3650,-5],[4400,8],[5300,8],[5800,0],[6500,0],[7400,13,'io'],[7850,13],[8050,5,'out'],[8250,4],[8700,-2],[9200,0]],
+    mH: [[0,0],[3200,0],[3650,-16],[4150,-8],[4450,0],[6500,0],[7400,7],[7850,7],[8050,-14,'out'],[8300,-12],[8800,-4],[9200,0]],
+    mHand: [[0,M_REST],[500,M_REST],[1750,[47,-13],'io'],[1880,[47,-13]],[2020,[47,-9],'in'],[2350,M_REST,'out'],
+            [3200,M_REST],[3800,[2,-102]],[4450,M_GRAB],[5000,M_GRAB],[5300,M_UP],[5480,M_UP],[5760,M_REST,'in'],[9600,M_REST]],
+    wBack: [[0,W_BACK],[1780,W_BACK],[1900,[-9,-34],'out'],[2020,[-15,-15],'in'],[2250,[-12,-26],'out'],[2650,W_BACK],
+            [4700,W_BACK],[5000,[1,-52]],[5300,[-8,-80]],[5480,[-8,-80]],[5700,[-6,-58],'out'],[6050,W_BACK],
+            [7350,W_BACK],[7750,[-28,-66]],[7860,[-29,-66]],[8050,[-46,-71],'out'],[8300,[-45,-70]],[8450,[-30,-60]],[8850,W_BACK]],
+    wFront: [[0,W_FRONT],[9600,W_FRONT]],
+    wT: [[0,0],[7900,0],[8050,3],[8600,0]],
+    wH: [[0,0],[1850,0],[1950,-9,'out'],[2500,0],[4950,0],[5100,-6],[5800,0],[7700,0],[7850,-8,'out'],[8400,-8],[8800,0]],
+    flip: [[0,1],[9600,1]]
+  };
+
+  var els = { mT: $('mT'), mH: $('mH'), wT: $('wT'), wH: $('wH'), wA: $('wFlipA'), wB: $('wFlipB'), heart: $('heart'),
+    mU: $('mArmU'), mF: $('mArmF'), wbU: $('wBackU'), wbF: $('wBackF'), wfU: $('wFrontU'), wfF: $('wFrontF') };
+  var elbows = { m: [-2, -21], wb: [-6, -28], wf: [18, -30] };
+
+  function rot(p, deg) { var c = Math.cos(deg * D), s = Math.sin(deg * D); return [p[0] * c - p[1] * s, p[0] * s + p[1] * c]; }
+
+  function arm(key, gU, gF, S, Tg, L1, L2) {
+    var dx = Tg[0] - S[0], dy = Tg[1] - S[1];
+    var d = Math.max(Math.abs(L1 - L2) + .5, Math.min(L1 + L2 - .01, Math.hypot(dx, dy)));
+    var a = Math.atan2(dy, dx);
+    var al = Math.acos(Math.max(-1, Math.min(1, (L1 * L1 + d * d - L2 * L2) / (2 * L1 * d))));
+    var best = null, bd = 1e9;
+    [a + al, a - al].forEach(function (u) {
+      var e = [S[0] + L1 * Math.cos(u), S[1] + L1 * Math.sin(u)];
+      var dd = Math.hypot(e[0] - elbows[key][0], e[1] - elbows[key][1]);
+      if (dd < bd) { bd = dd; best = { u: u, e: e }; }
+    });
+    elbows[key] = best.e;
+    var f = Math.atan2(Tg[1] - best.e[1], Tg[0] - best.e[0]);
+    gU.setAttribute('transform', 'translate(' + S[0].toFixed(2) + ',' + S[1].toFixed(2) + ') rotate(' + (best.u / D - 90).toFixed(2) + ')');
+    gF.setAttribute('transform', 'translate(0,' + L1 + ') rotate(' + ((f - best.u) / D).toFixed(2) + ')');
+  }
+
+  function pose(p) {
+    els.mT.setAttribute('transform', 'rotate(' + p.mT.toFixed(2) + ')');
+    els.mH.setAttribute('transform', 'translate(0,-56) rotate(' + p.mH.toFixed(2) + ')');
+    els.wT.setAttribute('transform', 'rotate(' + p.wT.toFixed(2) + ')');
+    els.wH.setAttribute('transform', 'translate(2,-55) rotate(' + p.wH.toFixed(2) + ')');
+    var fx = Math.abs(p.flip) < .02 ? .02 * (p.flip < 0 ? -1 : 1) : p.flip;
+    els.wA.setAttribute('transform', 'translate(212,166) scale(' + fx.toFixed(3) + ',1)');
+    els.wB.setAttribute('transform', 'translate(212,166) scale(' + fx.toFixed(3) + ',1)');
+    arm('m', els.mU, els.mF, rot([1, -50], p.mT), p.mHand, 30, 28);
+    var ws = rot([1, -48], p.wT);
+    arm('wb', els.wbU, els.wbF, ws, p.wBack, 25, 23);
+    arm('wf', els.wfU, els.wfF, ws, p.wFront, 25, 23);
+    var h = p.heart || 0;
+    els.heart.setAttribute('transform', 'translate(181,' + (64 - 6 * h).toFixed(2) + ') scale(' + h.toFixed(3) + ')');
+  }
+
+  function at(tracks, t) { var o = {}; for (var k in tracks) o[k] = sample(tracks[k], t); return o; }
+
+  // the kiss: settle, she turns to him, both lean in, then a slow sway
+  var KISS_IN = 2000;
+  function kissTracks(p0) {
+    return {
+      mT: [[0,p0.mT],[500,0],[1100,0],[1900,17.5,'io']],
+      mH: [[0,p0.mH],[500,0],[1100,0],[1900,9,'io']],
+      mHand: [[0,p0.mHand],[500,M_REST],[1100,M_REST],[1900,[64,-14]]],
+      wBack: [[0,p0.wBack],[500,W_BACK],[2000,[22,-12]]],
+      wFront: [[0,p0.wFront],[600,W_FRONT],[1100,[30,-40]],[1900,[43,-60],'io']],
+      wT: [[0,p0.wT],[500,0],[1100,0],[1900,17.5,'io']],
+      wH: [[0,p0.wH],[500,0],[1100,0],[1900,9,'io']],
+      flip: [[0,1],[600,1],[1050,-1,'io']],
+      heart: [[0,0],[1800,0],[2150,1.2,'out'],[2400,1]]
+    };
+  }
+
+  var mode = 'loop', t0 = performance.now(), kiss = null, frozen = null;
+  function frame(now) {
+    var t = now - t0, p;
+    if (frozen !== null) t = frozen;
+    if (mode === 'loop') {
+      p = at(T, t % LOOP);
+    } else {
+      p = at(kiss, Math.min(t, KISS_IN + 400));
+      if (t > KISS_IN) { // gentle sway, in step so the lips stay together
+        var s = Math.sin((t - KISS_IN) / 1600 * Math.PI) * 1.4;
+        p.mT += s; p.wT -= s; p.mH += s * .4; p.wH -= s * .4;
+        p.heart = 1 + .12 * Math.sin((t - KISS_IN) / 420 * Math.PI);
+      }
+    }
+    pose(p);
+    if (frozen === null) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  window.scene = {
+    kiss: function () {
+      var now = performance.now();
+      var cur = mode === 'loop' ? at(T, (now - t0) % LOOP) : null;
+      cur.heart = 0;
+      kiss = kissTracks(cur); mode = 'kiss'; t0 = now;
+    },
+    // for tests: render one frozen moment
+    freeze: function (m, t) { if (m === 'kiss' && mode !== 'kiss') window.scene.kiss(); mode = m; frozen = t; frame(performance.now()); },
+    lips: function () {
+      var a = $('mLips').getBoundingClientRect(), b = $('wLips').getBoundingClientRect();
+      return [a.left - b.left, a.top - b.top];
+    }
+  };
+})();
+
+/* ---------- the question ---------- */
 (function () {
   var yes = document.getElementById('yes');
   var no = document.getElementById('no');
+  var scene = document.getElementById('scene');
   var GAP = 16, PAD = 12;
   var tries = 0;
   var LINES = ['are you sure?', 'really?', 'last chance.', 'ok then.'];
 
-  // read the safe-area insets once from CSS
   var probe = document.createElement('div');
   probe.style.cssText = 'position:fixed;visibility:hidden;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)';
   document.body.appendChild(probe);
@@ -251,7 +417,7 @@
   function attempt(e) {
     if (e && e.cancelable) e.preventDefault();
     if (e) e.stopPropagation();
-    if (tries >= 4 + LINES.length) return; // already leaving
+    if (tries >= 4 + LINES.length) return;
     var now = Date.now();
     if (now - last < 200) return; // one tap fires several events: count it once
     last = now;
@@ -272,7 +438,7 @@
       no.classList.add('loose');
       void no.offsetWidth;
     }
-    var nr = no.getBoundingClientRect(); // size after the label change
+    var nr = no.getBoundingClientRect();
     var w = nr.width, h = nr.height, s = insets();
     var vw = document.documentElement.clientWidth, vh = window.innerHeight;
     var minX = s.l + PAD, maxX = vw - s.r - PAD - w;
@@ -298,7 +464,7 @@
   no.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); }); // backstop: No never does anything
 
   window.addEventListener('resize', function () {
-    if (!no.classList.contains('loose')) return;
+    if (!no.parentNode || !no.classList.contains('loose')) return;
     var r = no.getBoundingClientRect(), s = insets();
     if (r.left < s.l || r.top < s.t || r.right > document.documentElement.clientWidth - s.r || r.bottom > innerHeight - s.b) dodge();
   });
@@ -307,12 +473,11 @@
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function stamp(d) { return d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()); }
   function utc(d) { return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
-  var today = new Date();
-  var day = stamp(today);
+  var day = stamp(new Date());
   var START = day + 'T200000', END = day + 'T230000';
   window.buildICS = function () {
     return [
-      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Dov//Tonight//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Dov//Marija and Dov//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
       'BEGIN:VEVENT',
       'UID:date-with-dov-' + day + '@dov-deveng.github.io',
       'DTSTAMP:' + utc(new Date()),
@@ -323,7 +488,6 @@
       'END:VEVENT', 'END:VCALENDAR', ''
     ].join('\r\n');
   };
-  // Google Calendar fallback, same times, in her calendar's zone
   document.getElementById('gcal').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' +
     encodeURIComponent('Date with Dov') + '&dates=' + START + '/' + END + '&details=' + encodeURIComponent("8:00. It's a date.");
 
@@ -332,7 +496,7 @@
   var STATIC_DAY = '20261104';
   var ios = /iP(hone|od|ad)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   document.getElementById('addcal').addEventListener('click', function (e) {
-    if (ios && day === STATIC_DAY) return; // follow the link to tonight.ics
+    if (ios && day === STATIC_DAY) return;
     e.preventDefault();
     var ics = window.buildICS();
     if (ios) { location.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics); return; }
@@ -342,14 +506,18 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
   });
 
-  // no page movement at all
   document.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
   document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
 
   yes.addEventListener('click', function () {
     if (no.parentNode) no.remove();
-    document.getElementById('s-ask').classList.remove('active');
-    document.getElementById('s-yes').classList.add('active');
+    // keep the couple exactly where they are while the text swaps
+    var h = scene.getBoundingClientRect().height;
+    scene.style.flex = '0 0 ' + h + 'px';
+    document.getElementById('poster').classList.add('yes');
+    document.getElementById('done').style.marginTop = 'auto';
+    scene.style.marginTop = 'auto';
+    window.scene.kiss();
   });
 })();
 </script>
